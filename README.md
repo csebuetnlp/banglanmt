@@ -1,0 +1,3 @@
+This repository contains the code and data of the paper titled "Not Low-Resource Anymore: Aligner Ensembling, Batch Filtering, and New Datasets for Bengali-English Machine Translation" to appear in Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP 2020), November 16 - November 20, 2020.
+
+This repository is still under construction. Please check back soon.
