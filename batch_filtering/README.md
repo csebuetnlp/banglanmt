@@ -1,5 +1,5 @@
 ## Setup
-* Install all dependecies mentioned [here](../).
+* Install all dependecies mentioned [here](https://github.com/csebuetnlp/banglanmt).
 * download models: `bash ./install_models.sh`
 * setup necessary tools: `bash ./install_external_tools.sh`
 
