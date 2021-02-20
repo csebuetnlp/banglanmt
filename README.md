@@ -48,7 +48,7 @@ This repository contains the code and data of the paper titled [**"Not Low-Resou
   * See [training module.](training/)
 
 ## License
-Contents of this repository are licensed under [Creative Commons Attribution-NonCommercial 4.0 International License](https://creativecommons.org/licenses/by-nc/4.0/). 
+Contents of this repository are licensed under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/). 
 
 ## Citation
 If you use this dataset or code modules, please cite the following paper:
