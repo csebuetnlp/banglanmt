@@ -6,34 +6,46 @@ import time
 import shutil
 import argparse
 import glob
+import json
 from dataProcessor import processData
 
-OPENNMTDIR = os.path.join(os.path.dirname(__file__), "..")
-
-def preprocess(args):
-    cmd = f'''
-        python \"{os.path.join(OPENNMTDIR, "preprocess.py")}\" \
-            -train_src \"{os.path.join(args.output_dir, "data", "src-train.txt.tok")}\" \
-            -train_tgt \"{os.path.join(args.output_dir, "data", "tgt-train.txt.tok")}\" \
-            -valid_src \"{os.path.join(args.output_dir, "data", "src-valid.txt.tok")}\" \
-            -valid_tgt \"{os.path.join(args.output_dir, "data", "tgt-valid.txt.tok")}\" \
-            -save_data \"{os.path.join(args.output_dir, "Preprocessed", "processed")}\" \
-            -src_vocab \"{os.path.join(args.output_dir, "Preprocessed", "srcSPM.vocab")}\" \
-            -tgt_vocab \"{os.path.join(args.output_dir, "Preprocessed", "tgtSPM.vocab")}\" \
-            -src_seq_length {args.src_seq_length} \
-            -tgt_seq_length {args.tgt_seq_length} -filter_valid
-    '''
-    os.system(cmd)
+FILEDIR = os.path.dirname(__file__)
 
 def train(args):
+    data_map = {
+        "train": {
+            "path_src": os.path.join(args.output_dir, "data", "src-train.txt"),
+            "path_tgt": os.path.join(args.output_dir, "data", "tgt-train.txt"),
+            "transforms": ["sentencepiece", "filtertoolong"],
+            "weight": 1
+        },
+        "valid": {
+            "path_src": os.path.join(args.output_dir, "data", "src-valid.txt"),
+            "path_tgt": os.path.join(args.output_dir, "data", "tgt-valid.txt"),
+            "transforms": ["sentencepiece", "filtertoolong"]
+        }     
+    }
     cmd = f'''
-        python \"{os.path.join(OPENNMTDIR, "train.py")}\" \
-            -data \"{os.path.join(args.output_dir, "Preprocessed", "processed")}\" \
+        onmt_train \
+            -data \"{json.dumps(data_map)}\" \
+            -src_vocab \"{os.path.join(args.output_dir, "Preprocessed", "srcSPM.vocab")}\" \
+            -tgt_vocab \"{os.path.join(args.output_dir, "Preprocessed", "tgtSPM.vocab")}\" \
+            -src_subword_type sentencepiece \
+            -tgt_subword_type sentencepiece \
+            -src_subword_model \"{os.path.join(args.output_dir, "Preprocessed", "srcSPM.model")}\" \
+            -tgt_subword_model \"{os.path.join(args.output_dir, "Preprocessed", "tgtSPM.model")}\" \
+            -src_subword_nbest {args.nbest} \
+            -src_subword_alpha {args.alpha} \
+            -tgt_subword_nbest {args.nbest} \
+            -tgt_subword_alpha {args.alpha} \
+            -src_seq_length {args.src_seq_length} \
+            -tgt_seq_length {args.tgt_seq_length} \
             -save_model \"{os.path.join(args.output_dir, "Models", args.model_prefix)}\" \
             -layers {args.layers} -rnn_size {args.rnn_size} -word_vec_size {args.word_vec_size} -transformer_ff {args.transformer_ff} -heads {args.heads}  \
 			-encoder_type transformer -decoder_type transformer -position_encoding \
             -train_steps {args.train_steps} -max_generator_batches 2 -dropout 0.1 \
             -batch_size {args.train_batch_size} -batch_type tokens -normalization tokens -accum_count {args.gradient_accum} \
+            -queue_size 10000 -bucket_size 32768 \
             -optim adam -adam_beta2 0.998 -decay_method noam -warmup_steps {args.warmup_steps} -learning_rate {args.learning_rate} \
             -max_grad_norm 0 -param_init 0  -param_init_glorot \
 			-share_decoder_embeddings  \
@@ -54,20 +66,22 @@ def average_models(args):
             model_paths[0].rsplit("_step_")[0] + 
             f"_step_{step_count(model_paths[0])}-{step_count(model_paths[-1])}-{args.average_last}.pt"
         )
+
+        model_paths = [f"\"{k}\"" for k in model_paths]
         cmd = [
-            f"python \"{os.path.join(OPENNMTDIR, 'tools', 'average_models.py')}\"",
+            f"onmt_average_models",
             f"-models {' '.join(model_paths)}",
-            f"-output {output_path}"
+            f"-output \"{output_path}\""
         ]
         os.system(" ".join(cmd))
 
 def _translate(args, modelName, inputFile, outputFile):
     cmd = f'''
-        python \"{os.path.join(OPENNMTDIR, "translate.py")}\" \
-            -model {modelName} \
+        onmt_translate \
+            -model \"{modelName}\" \
             -src \"{inputFile}\" \
             -output \"{outputFile}\" \
-            -replace_unk -verbose -max_length {args.tgt_seq_length} -batch_size {args.eval_batch_size} -report_bleu -fp32 -gpu 0
+            -replace_unk copy -verbose -max_length {args.tgt_seq_length} -batch_size {args.eval_batch_size} -gpu 0
     '''
     os.system(cmd)
 
@@ -122,11 +136,11 @@ def calculate_scores(args, dataset_category):
         tgt_files = glob.glob(tgt_file_prefix)
         if tgt_files:
             bleu_cmd = [
-                f"perl \"{os.path.join(OPENNMTDIR, 'tools', 'multi-bleu-detok.perl')}\"",
-                f"-lc {' '.join(tgt_files)} < {pred_file}"
+                f"perl \"{os.path.join(FILEDIR, 'multi-bleu-detok.perl')}\"",
+                f"-lc {' '.join(tgt_files)} < \"{pred_file}\""
             ]
             sacre_cmd = [
-                f"cat {pred_file}",
+                f"cat \"{pred_file}\"",
                 "|",
                 f"sacrebleu {' '.join(tgt_files)}"
             ]
@@ -205,8 +219,6 @@ def evaluate(args):
 
 def main(args):
     processData(args, True)
-    if args.do_preprocess:
-        preprocess(args)
     if args.do_train:
         train(args)
     if args.model_prefix and args.average_last:
@@ -252,7 +264,7 @@ if __name__ == "__main__":
         help='maximum target sequence length')
 
     parser.add_argument(
-        '--model_prefix', type=str, 
+        '--model_prefix', type=str,
         help='Prefix of the model to save')
 
     parser.add_argument(
@@ -320,7 +332,7 @@ if __name__ == "__main__":
         help='world size')
 
     parser.add_argument(
-        '--gpu_ranks', type=int, nargs="*", default=[0, 1, 2, 3], 
+        '--gpu_ranks', type=str, nargs="*", default=["0", "1", "2", "3"], 
         help='gpu ranks')
 
     parser.add_argument(
@@ -331,8 +343,6 @@ if __name__ == "__main__":
         help='Run training')
     parser.add_argument('--do_eval', action='store_true',
         help='Run evaluation')
-    parser.add_argument('--do_preprocess', action='store_true',
-        help='Run the preprocessor to create binary files. Delete previous files if theres any.')
     
     parser.add_argument(
         '--nbest', type=int, default=32, 

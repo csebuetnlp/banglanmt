@@ -9,17 +9,23 @@ refer to [here](preprocessing/).
 
 # Training
 
+**Note:** This code has been refactored to support [OpenNMT-py 2.0](https://github.com/OpenNMT/OpenNMT-py)
+
 ### Setup
-* Install all dependecies mentioned in the home page first.
-* ```bash
-  $ cd seq2seq/
-  $ pip install -r requirements.txt
-  $ pip install ./
+
+```bash
+$ cd seq2seq/
+$ conda create python==3.7.9 pytorch==1.7.1 torchvision==0.8.2 torchaudio==0.7.2 cudatoolkit=10.2 -c pytorch -p ./env
+$ conda activate ./env # or source activate ./env (for older versions of anaconda)
+$ pip install --upgrade -r requirements.txt
+```
+- **Note**: For newer NVIDIA GPUS such as ***A100*** or ***3090*** use `cudatoolkit=11.0`.
+
 
 ### Usage
 
 ```bash
-$ cd seq2seq/pipeline/
+$ cd seq2seq/
 $ python pipeline.py -h
 usage: pipeline.py [-h] --input_dir PATH --output_dir PATH --src_lang SRC_LANG
                    --tgt_lang TGT_LANG
@@ -40,7 +46,7 @@ usage: pipeline.py [-h] --input_dir PATH --output_dir PATH --src_lang SRC_LANG
                    [--average_last AVERAGE_LAST] [--world_size WORLD_SIZE]
                    [--gpu_ranks [GPU_RANKS [GPU_RANKS ...]]]
                    [--train_from TRAIN_FROM] [--do_train] [--do_eval]
-                   [--do_preprocess] [--nbest NBEST] [--alpha ALPHA]
+                   [--nbest NBEST] [--alpha ALPHA]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -93,8 +99,6 @@ optional arguments:
                         start training from this checkpoint
   --do_train            Run training
   --do_eval             Run evaluation
-  --do_preprocess       Run the preprocessor to create binary files. Delete
-                        previous files if theres any.
   --nbest NBEST         sentencepiece nbest size
   --alpha ALPHA         sentencepiece alpha
 ```
@@ -133,7 +137,7 @@ optional arguments:
 ```bash
 $ export CUDA_VISIBLE_DEVICES=0,1,2,3
 # for training
-$ python pipeline.py --src_lang bn --tgt_lang en -i inputFolder/ -o outputFolder/ --model_prefix bn2en --do_train --do_preprocess --do_eval
+$ python pipeline.py --src_lang bn --tgt_lang en -i inputFolder/ -o outputFolder/ --model_prefix bn2en --do_train --do_eval
 # for evaluating on the averaged model
 $ python pipeline.py --src_lang bn --tgt_lang en -i inputFolder/ -o outputFolder/ --eval_model  outputFolder/Models/bn2en_step_111000-130000-20.pt --do_eval 
 ```

@@ -1,6 +1,6 @@
-six
-tqdm==4.30.*
-torch>=1.2
-git+https://github.com/pytorch/text.git@master#wheel=torchtext
-future
-configargparse
+git+https://github.com/abhik1505040/OpenNMT-py
+pyrouge
+git+https://github.com/NVIDIA/apex.git@700d6825e205732c1d6be511306ca4e595297070
+sentencepiece>=0.1.94
+subword-nmt>=0.3.7
+sacrebleu==1.4.2

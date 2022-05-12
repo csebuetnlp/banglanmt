@@ -2,11 +2,19 @@
 
 This repository contains the code and data of the paper titled [**"Not Low-Resource Anymore: Aligner Ensembling, Batch Filtering, and New Datasets for Bengali-English Machine Translation"**](https://www.aclweb.org/anthology/2020.emnlp-main.207/) published in *Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP 2020), November 16 - November 20, 2020.*
 
+## Updates
+
+* The base translation models are now available for download.
+* The training code has been refactored to support [OpenNMT-py 2.2.0](https://github.com/OpenNMT/OpenNMT-py).
+
+
 ## Table of Contents
 
 - [Bangla-NMT](#bangla-nmt)
+  - [Updates](#updates)
   - [Table of Contents](#table-of-contents)
   - [Datasets](#datasets)
+  - [Models](#models)
   - [Dependencies](#dependencies)
   - [Segmentation](#segmentation)
   - [Batch-filtering](#batch-filtering)
@@ -22,7 +30,14 @@ This repository contains the code and data of the paper titled [**"Not Low-Resou
 * RisingNews dev/test sets (`data/`)
 * Preprocessed sipc dev/test sets (`data/`)
 * Sentencepiece vocabulary models for Bengali and English (`vocab/`) 
-  
+
+## Models
+
+The base sized transformer model (6 layers, 8 attention heads) checkpoints can be found below: 
+
+* [Bengali to English](https://docs.google.com/uc?export=download&id=1xx5bU31sIMU24kLm5bYh19qLBYHHriP4)
+* [English to Bengali](https://docs.google.com/uc?export=download&id=1-RLTuuOvSPB1Qzmho9WFlhAYnbYxPI_Q)
+
 
 ## Dependencies
 * Python 3.7.3

@@ -23,10 +23,10 @@ def createFolders(args):
         if os.path.isdir(os.path.join(args.output_dir, dirname)):
             shutil.rmtree(os.path.join(args.output_dir, dirname))
 
-    if args.do_preprocess:
-        if os.path.isdir(os.path.join(args.output_dir, "Preprocessed")):
-            shutil.rmtree(os.path.join(args.output_dir, "Preprocessed"))
     
+    if os.path.isdir(os.path.join(args.output_dir, "Preprocessed")):
+        shutil.rmtree(os.path.join(args.output_dir, "Preprocessed"))
+
     for dirname in required_dirnames:
         os.makedirs(os.path.join(args.output_dir, dirname), exist_ok=True)
 
@@ -91,7 +91,7 @@ def moveRawData(args):
     vocab_cmd = [
         "spm_export_vocab --model",
         os.path.join(args.output_dir, "Preprocessed", "srcSPM.model"),
-        "| cut -f1 >",
+        "| tail -n +4 >",
         os.path.join(args.output_dir, "Preprocessed", "srcSPM.vocab")
     ]
     os.system(" ".join(vocab_cmd))
@@ -99,12 +99,12 @@ def moveRawData(args):
     vocab_cmd = [
         "spm_export_vocab --model",
         os.path.join(args.output_dir, "Preprocessed", "tgtSPM.model"),
-        "| cut -f1 >",
+        "| tail -n +4 >",
         os.path.join(args.output_dir, "Preprocessed", "tgtSPM.vocab")
     ]
     os.system(" ".join(vocab_cmd))
 
-    if args.do_train and args.do_preprocess:
+    if args.do_train:
         _merge(args, "train")
         _merge(args, "valid")
         
@@ -155,39 +155,17 @@ def _lc(input_file):
 def spmOperate(args, fileType, tokenize):
     if tokenize:
         modelName = os.path.join(args.output_dir, "Preprocessed", f"{fileType}SPM.model")
-        input_files = (
-            glob.glob(os.path.join(args.output_dir, "data", f'*{fileType}-*')) + 
-            glob.glob(os.path.join(args.output_dir, "Outputs", f'*{fileType}-*'))
-        )
+        input_files = glob.glob(os.path.join(args.output_dir, "Outputs", f'*{fileType}-*'))
 
         for input_file in input_files:
-            if '-train.txt' in input_file:
-                for e in tqdm(range(64), desc=f"Applying regularization on {os.path.basename(input_file)}"):
-                    seed_cmd = [
-                        f"seq 1 {max(10000, _lc(input_file))}",
-                        "|",
-                        f"openssl enc -base64 -pass pass:{e} -nosalt 2>/dev/null",
-                        f"-out \"{os.path.join(args.output_dir, 'temp', 'seed.txt')}\""
-                    ]
-                    os.system(" ".join(seed_cmd))
-                    spm_cmd = [
-                        f"spm_encode --model=\"{modelName}\"",
-                        f"--output_format=sample_piece --nbest_size={args.nbest} --alpha={args.alpha}",
-                        f"< \"{input_file}\" |",
-                        f"shuf --random-source=\"{os.path.join(args.output_dir, 'temp', 'seed.txt')}\"",
-                        f">> \"{input_file}.tok\""
-                    ]
-                    os.system(" ".join(spm_cmd))
-                    os.remove(os.path.join(args.output_dir, 'temp', 'seed.txt'))
-            else:
-                spm_cmd = [
-                    f"spm_encode --model=\"{modelName}\"",
-                    f"--output_format=piece",
-                    f"< \"{input_file}\" > \"{input_file}.tok\""
-                ]
-                os.system(" ".join(spm_cmd))
-
+            spm_cmd = [
+                f"spm_encode --model=\"{modelName}\"",
+                f"--output_format=piece",
+                f"< \"{input_file}\" > \"{input_file}.tok\""
+            ]
+            os.system(" ".join(spm_cmd))
             os.remove(input_file)
+
     else:
         modelName = os.path.join(args.output_dir, "Preprocessed", f"tgtSPM.model")
         for input_file in glob.glob(os.path.join(args.output_dir, "Outputs", f'*{fileType}-*.tok')):
