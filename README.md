@@ -18,7 +18,7 @@ This repository contains the code and data of the paper titled [**"Not Low-Resou
   - [Dependencies](#dependencies)
   - [Segmentation](#segmentation)
   - [Batch-filtering](#batch-filtering)
-  - [Training](#training)
+  - [Training & Evaluation](#training--evaluation)
   - [License](#license)
   - [Citation](#citation)
 
@@ -59,8 +59,8 @@ The base-sized transformer model (6 layers, 8 attention heads) checkpoints can b
 ## Batch-filtering
   * See [batch-filtering module.](batch_filtering/)
 
-## Training
-  * See [training module.](training/)
+## Training & Evaluation
+  * See [training and evaluation module.](training/)
 
 ## License
 Contents of this repository are licensed under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/). 
