@@ -137,7 +137,16 @@ optional arguments:
 ```bash
 $ export CUDA_VISIBLE_DEVICES=0,1,2,3
 # for training
-$ python pipeline.py --src_lang bn --tgt_lang en -i inputFolder/ -o outputFolder/ --model_prefix bn2en --do_train --do_eval
-# for evaluating on the averaged model
-$ python pipeline.py --src_lang bn --tgt_lang en -i inputFolder/ -o outputFolder/ --eval_model  outputFolder/Models/bn2en_step_111000-130000-20.pt --do_eval 
+$ python pipeline.py \
+  --src_lang bn --tgt_lang en \
+  -i inputFolder/ -o outputFolder/ \ 
+  --model_prefix bn2en --do_train --do_eval
+  
+# for evaluating on the averaged model (on single GPU)
+$ python pipeline.py 
+  --src_lang bn --tgt_lang en \
+  -i inputFolder/ -o outputFolder/ \
+  --eval_model  outputFolder/Models/bn2en_step_111000-130000-20.pt \
+  --do_eval 
 ```
+For single GPU training, additionally provide the following flags: ``--world_size 1``, ``--gpu_ranks 0`` and update the effective batch size according to available GPU VRAM using the flags `--train_batch_size X` and ``--gradient_accum X``.
