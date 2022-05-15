@@ -38,6 +38,7 @@ The base-sized transformer model (6 layers, 8 attention heads) checkpoints can b
 * [Bengali to English](https://docs.google.com/uc?export=download&id=1xx5bU31sIMU24kLm5bYh19qLBYHHriP4)
 * [English to Bengali](https://docs.google.com/uc?export=download&id=1-RLTuuOvSPB1Qzmho9WFlhAYnbYxPI_Q)
 
+To evaluate these models on new datasets, please refer to [here](https://github.com/csebuetnlp/banglanmt/tree/master/training).
 
 ## Dependencies
 * Python 3.7.3
