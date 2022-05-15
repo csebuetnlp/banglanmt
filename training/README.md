@@ -7,7 +7,7 @@ If you want to,
 
 refer to [here](preprocessing/).
 
-# Training
+# Training & Evaluation
 
 **Note:** This code has been refactored to support [OpenNMT-py 2.0](https://github.com/OpenNMT/OpenNMT-py)
 
@@ -103,7 +103,7 @@ optional arguments:
   --alpha ALPHA         sentencepiece alpha
 ```
 
-*  ***Sample `input_dir` structure for bn2en training:***
+*  ***Sample `input_dir` structure for bn2en training and evaluation:***
 
     ```bash
     input_dir/
@@ -141,12 +141,18 @@ $ python pipeline.py \
   --src_lang bn --tgt_lang en \
   -i inputFolder/ -o outputFolder/ \ 
   --model_prefix bn2en --do_train --do_eval
-  
-# for evaluating on the averaged model (on single GPU)
+```
+For single GPU training, additionally provide the following flags: ``--world_size 1``, ``--gpu_ranks 0`` and update the effective batch size according to available GPU VRAM using the flags `--train_batch_size X` and ``--gradient_accum X``.
+
+
+# Evaluation
+
+For evaluating trained models on a single GPU on new test files, use the following snippet with appropriate arguments:
+
+```bash
 $ python pipeline.py 
   --src_lang bn --tgt_lang en \
   -i inputFolder/ -o outputFolder/ \
-  --eval_model  outputFolder/Models/bn2en_step_111000-130000-20.pt \
+  --eval_model  <path/to/model> \
   --do_eval 
 ```
-For single GPU training, additionally provide the following flags: ``--world_size 1``, ``--gpu_ranks 0`` and update the effective batch size according to available GPU VRAM using the flags `--train_batch_size X` and ``--gradient_accum X``.
