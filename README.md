@@ -49,7 +49,7 @@ To evaluate these models on new datasets, please refer to [here](https://github.
 * [FastBPE](https://github.com/glample/fastBPE)
 * [sentencepiece](https://github.com/google/sentencepiece) (`Install CLI`)
 * [transliterate](https://pypi.org/project/transliterate) 
-* [regex](https://github.com/google/sentencepiece)
+* [regex](https://pypi.org/project/regex/)
 * [torchtext](https://pypi.org/project/torchtext) (`pip install torchtext==0.4.0`)
 * [sacrebleu](https://pypi.org/project/sacrebleu)
 * [aksharamukha](https://pypi.org/project/aksharamukha)
