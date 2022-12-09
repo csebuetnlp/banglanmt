@@ -19,13 +19,9 @@ def createFolders(args):
     ]
 
     # do cleanup first
-    for dirname in required_dirnames[:3]:
+    for dirname in required_dirnames[:4]:
         if os.path.isdir(os.path.join(args.output_dir, dirname)):
             shutil.rmtree(os.path.join(args.output_dir, dirname))
-
-    
-    if os.path.isdir(os.path.join(args.output_dir, "Preprocessed")):
-        shutil.rmtree(os.path.join(args.output_dir, "Preprocessed"))
 
     for dirname in required_dirnames:
         os.makedirs(os.path.join(args.output_dir, dirname), exist_ok=True)
@@ -54,29 +50,30 @@ def _move(args, dataset_category):
     for src_file in glob.glob(os.path.join(args.input_dir, "data", f"*.{dataset_category}.{args.src_lang}")):
         tgt_file_prefix = src_file.rsplit(f".{dataset_category}.{args.src_lang}", 1)[0] + f".{dataset_category}.{args.tgt_lang}"
         tgt_files = glob.glob(tgt_file_prefix + "*")
-        if tgt_files:
+
+        shutil.copy(
+            src_file,
+            os.path.join(
+                args.output_dir,
+                "Outputs",
+                f".src-{dataset_category}.txt".join(
+                    os.path.basename(src_file).rsplit(f".{dataset_category}.{args.src_lang}", 1)
+                )
+            ) 
+        )
+
+        for tgt_file in tgt_files:
             shutil.copy(
-                src_file,
-                os.path.join(
-                    args.output_dir,
-                    "Outputs",
-                    f".src-{dataset_category}.txt".join(
-                        os.path.basename(src_file).rsplit(f".{dataset_category}.{args.src_lang}", 1)
-                    )
-                ) 
-            )
-            for tgt_file in tgt_files:
-                shutil.copy(
-                tgt_file, 
-                os.path.join(
-                    args.output_dir,
-                    "Outputs",
-                    f".tgt-{dataset_category}.txt".join(
-                        os.path.basename(tgt_file).rsplit(f".{dataset_category}.{args.tgt_lang}", 1)
-                    )
+            tgt_file, 
+            os.path.join(
+                args.output_dir,
+                "Outputs",
+                f".tgt-{dataset_category}.txt".join(
+                    os.path.basename(tgt_file).rsplit(f".{dataset_category}.{args.tgt_lang}", 1)
                 )
             )
-    
+        )
+
 def moveRawData(args):
     # move vocab models
     shutil.copy(
