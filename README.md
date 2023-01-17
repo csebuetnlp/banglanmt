@@ -35,8 +35,8 @@ This repository contains the code and data of the paper titled [**"Not Low-Resou
 
 The base-sized transformer model (6 layers, 8 attention heads) checkpoints can be found below: 
 
-* [Bengali to English](https://docs.google.com/uc?export=download&id=1xx5bU31sIMU24kLm5bYh19qLBYHHriP4)
-* [English to Bengali](https://docs.google.com/uc?export=download&id=1-RLTuuOvSPB1Qzmho9WFlhAYnbYxPI_Q)
+* [Bengali to English](https://dl.orangedox.com/G5EUvQciOt3uhofUZk)
+* [English to Bengali](https://dl.orangedox.com/cXsEi81FwvVZDNfpew)
 * [Sentencepiece vocabulary files](vocab.tar.bz2)
 
 To evaluate these models on new datasets, please refer to [here](https://github.com/csebuetnlp/banglanmt/tree/master/training).
