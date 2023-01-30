@@ -6,7 +6,7 @@ This repository contains the code and data of the paper titled [**"Not Low-Resou
 
 * The base translation models are now available for download.
 * The training code has been refactored to support [OpenNMT-py 2.2.0](https://github.com/OpenNMT/OpenNMT-py).
-* [Colab Notebook](https://colab.research.google.com/drive/1TQmanPu8Pb8kfgSRqMRxWZ79QeUfyczw?usp=sharing) added for the inference module.
+* [Colab Notebook](https://colab.research.google.com/drive/1TPkYXEWrf_dUjq-1qpapkreLc7JOug9E?usp=sharing) added for the inference module.
 
 ## Table of Contents
 
@@ -63,7 +63,7 @@ To evaluate these models on new datasets, please refer to [here](https://github.
 
 ## Training & Evaluation
   * See [training and evaluation module.](training/)
-  * Try out the models in [Google Colaboratory.](https://colab.research.google.com/drive/1r_7fTiTPlveSetUmJ645nfInEyeaLTmL?usp=sharing)
+  * Try out the models in [Google Colaboratory.](https://colab.research.google.com/drive/1TPkYXEWrf_dUjq-1qpapkreLc7JOug9E?usp=sharing)
 
 ## License
 Contents of this repository are licensed under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/). 
