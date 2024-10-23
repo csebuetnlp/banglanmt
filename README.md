@@ -39,7 +39,7 @@ The base-sized transformer model (6 layers, 8 attention heads) checkpoints can b
 * [English to Bengali](https://docs.google.com/uc?export=download&id=1uX8nL3yeosmK3YVCRHNJolv861-fCCbi)
 * [Sentencepiece vocabulary files](vocab.tar.bz2)
 
-To evaluate these models on new datasets, please refer to [here](https://github.com/csebuetnlp/banglanmt/tree/master/training).
+To evaluate these models on new datasets, please refer to [here](https://github.com/csebuetnlp/banglanmt/tree/master/training). You can also use the [Colab Notebook](https://colab.research.google.com/drive/1TPkYXEWrf_dUjq-1qpapkreLc7JOug9E?usp=sharing) for direct inference.
 
 ## Dependencies
 * Python 3.7.3
